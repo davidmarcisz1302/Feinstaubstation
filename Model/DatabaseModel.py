@@ -71,3 +71,4 @@ conn.close()
 
 def sqlite():
     return None
+
