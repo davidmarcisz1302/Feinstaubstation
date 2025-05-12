@@ -2,7 +2,7 @@
 import csv
 import sqlite3
 
-from Model.DatabaseModel import dht22_path, sds011_path
+from MeasurementValuesWeather.DatabaseModel import dht22_path, sds011_path
 
 conn = sqlite3.connect("feinstaubDB.sqlite")
 cursor = conn.cursor()
@@ -10,11 +10,11 @@ cursor = conn.cursor()
 # Hilfsfunktionen
 def persistLocation(lat, lon):
     cursor.execute("SELECT locationID FROM location WHERE latitude=? AND longitude=?", (lat, lon))
-    result = cursor.fetchone()
+    result = cursor.fetchone() # Rückgabe der Zeile
     if result:
         return result[0]
     cursor.execute("INSERT INTO location (latitude, longitude) VALUES (?, ?)", (lat, lon))
-    return cursor.lastrowid
+    return cursor.lastrowid # *lastrowid gibt nur nach einem INSERT-Befehl eine sinnvolle ID zurück.
 
 def persistDevice(model, location_id):
     cursor.execute("SELECT deviceID FROM device WHERE model=? AND locationID=?", (model, location_id))
