@@ -2,7 +2,7 @@
 import csv
 import sqlite3
 
-from Model.DatabaseModel import dht22_path, sds011_path
+from MeasurementValuesWeather.DatabaseModel import dht22_path, sds011_path
 
 conn = sqlite3.connect("feinstaubDB.sqlite")
 cursor = conn.cursor()
