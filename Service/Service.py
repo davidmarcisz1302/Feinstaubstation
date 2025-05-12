@@ -1,12 +1,9 @@
 import re
 import sqlite3
 from datetime import datetime
-
 import pandas as pd
-
 from Model.MeasurementValuesParticulate import measurementValuesParticulate
 from Model.MeasurementValuesWeather import measurementValuesWeather
-from Service import createGraph
 
 dbRoot = "../Model/feinstaubDB.sqlite"
 year = "2022"
@@ -27,10 +24,12 @@ def getValidDate():
         else:
             print("Ungültige Eingabe. Bitte verwende das Format dd.mm (z.B. 08.02).")
 
+
 def formatToSqlDate(dateInput):
     # Konvertiere dd.mm in yyyy-mm-dd für SQL
     parsedDate = datetime.strptime(dateInput + "." + year, "%d.%m.%Y")
     return parsedDate.strftime("%Y-%m-%d")
+
 
 def main():
     global connection, row, pm_row, temp_row
@@ -47,16 +46,20 @@ def main():
                                 MIN(temperature) AS minTemperatur,
                                 AVG(temperature) AS durchschnittlicheTemperatur
                          FROM measurementValuesWeather
-                         WHERE DATE(timestamp) = ?; 
+                         WHERE DATE(timestamp) = ?; \
                          """
 
         # Feinstaubabfrage
         queryPmAvg = """
-                     SELECT AVG(P1) AS P1,
-                            AVG(P2) AS P2
+                     SELECT AVG(P1) AS avgP1,
+                            AVG(P2) AS avgP2,
+                            MAX(P1) AS maxP1,
+                            MAX(P2) AS maxP2,
+                            MIN(P1) AS minP1,
+                            MIN(P2) AS minP2
                      FROM measurementValuesParticulate
                      WHERE DATE(timestamp) = ?
-                     GROUP BY sensorID; 
+                     GROUP BY sensorID; \
                      """
 
         temperaturQuery = pd.read_sql_query(queryTempStats, connection, params=(formattedDate,))
@@ -64,7 +67,7 @@ def main():
         pmQuery = pd.read_sql_query(queryPmAvg, connection, params=(formattedDate,))
 
         if not temperaturQuery.empty:
-            temp_row  = temperaturQuery.iloc[0]
+            temp_row = temperaturQuery.iloc[0]
             print(f"\nTemperatur am {dateInput}.{year}:")
             print(f"  Maximale Temperatur: {temp_row['maxTemperatur']} °C")
             print(f"  Minimale Temperatur: {temp_row['minTemperatur']} °C")
@@ -77,31 +80,38 @@ def main():
             pm_row = pmQuery.mean()
 
             for index, pm_row in pmQuery.iterrows():
-                print(f"")
-                print(f"Durchschnittliche Feinstaubwerte:")
-                print(f"  P1 = {round(pm_row['P1'], 2)}")
-                print(f"  P2 = {round(pm_row['P2'], 2)}")
-        else:
-            print("\nKeine Feinstaubdaten für dieses Datum gefunden.")
+                print(f"\nDurchschnittliche Feinstaubwerte:\n")
+                print(f"  Durchschnittliche Feinstaubkonzentration  PM10 = {round(pm_row['avgP1'], 2)} µg/m³")
+                print(f"  Durchschnittliche Feinstaubkonzentration  PM2,5 = {round(pm_row['avgP2'], 2)} µg/m³\n\n")
+                print(f"  Maximale Feinstaubkonzentration  PM10 = {round(pm_row['maxP1'], 2)} µg/m³")
+                print(f"  Minimale Feinstaubkonzentration  PM10 = {round(pm_row['minP1'], 2)} µg/m³\n\n")
+                print(f"  Maximale Feinstaubkonzentration  PM2,5 = {round(pm_row['maxP2'], 2)} µg/m³")
+                print(f"  Minimale Feinstaubkonzentration  PM2,5 = {round(pm_row['minP2'], 2)} µg/m³")
+
+            else:
+                print("\nKeine Feinstaubdaten für dieses Datum gefunden.")
 
         # Objekt Wetterstation
         weatherDatas = measurementValuesWeather(
-        temp_row['maxTemperatur'],
-        temp_row['minTemperatur'],
-        round(temp_row['durchschnittlicheTemperatur'], 2)
-        )
+            temp_row['maxTemperatur'],
+            temp_row['minTemperatur'],
+            round(temp_row['durchschnittlicheTemperatur'], 2))
 
         # Objekt Feinstaubsensor
         particualteDatas = measurementValuesParticulate(
-        pm_row['P1'],
-        pm_row['P2'],
+            round(pm_row['maxP1'], 2),
+            round(pm_row['minP1'], 2),
+            round(pm_row['avgP1'], 2),
+            round(pm_row['maxP2'], 2),
+            round(pm_row['minP2'], 2),
+            round(pm_row['avgP2'], 2)
         )
 
         # Objekt korrekt ausgeben
-        print("Das Objekt:", weatherDatas, particualteDatas)
+        print("Das Objekt:\n", weatherDatas, particualteDatas)
 
     finally:
-         connection.close()
+        connection.close()
 
 if __name__ == "__main__":
     main()
