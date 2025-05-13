@@ -9,6 +9,10 @@ dbRoot = "../Model/feinstaubDB.sqlite"
 year = "2022"
 inputDateMessage = "Bitte gib ein Datum ein (dd.mm): "
 
+# Liste für Objekte
+weatherDataList = []
+particulateDataList = []
+
 def getValidDate():
     # Eingaben validieren im Format dd.mm
     dateRegex = r"^\d{2}\.\d{2}$"
@@ -16,11 +20,8 @@ def getValidDate():
     while True:
         dateInput = input(inputDateMessage).strip()
         if len(dateInput) == 5 and re.match(dateRegex, dateInput):
-            try:
                 datetime.strptime(dateInput + "." + year, "%d.%m.%Y")
                 return dateInput
-            except ValueError:
-                print("Ungültiges Datum. Bitte gib ein echtes Datum ein.")
         else:
             print("Ungültige Eingabe. Bitte verwende das Format dd.mm (z.B. 08.02).")
 
@@ -31,7 +32,7 @@ def formatToSqlDate(dateInput):
     return parsedDate.strftime("%Y-%m-%d")
 
 
-def main():
+def getMeasurementValuesParticulate():
     global connection, row, pm_row, temp_row
     dateInput = getValidDate()
     formattedDate = formatToSqlDate(dateInput)
@@ -89,7 +90,7 @@ def main():
                 print(f"  Minimale Feinstaubkonzentration  PM2,5 = {round(pm_row['minP2'], 2)} µg/m³")
 
             else:
-                print("\nKeine Feinstaubdaten für dieses Datum gefunden.")
+                print("")
 
         # Objekt Wetterstation
         weatherDatas = measurementValuesWeather(
@@ -107,6 +108,10 @@ def main():
             round(pm_row['avgP2'], 2)
         )
 
+        # Speicherung der Objekte in Array
+        particulateDataList.append(particualteDatas)
+        weatherDataList.append(weatherDatas)
+
         # Objekt korrekt ausgeben
         print("Das Objekt:\n", weatherDatas, particualteDatas)
 
@@ -114,4 +119,6 @@ def main():
         connection.close()
 
 if __name__ == "__main__":
-    main()
+    getMeasurementValuesParticulate()
+
+    getMeasurementValuesParticulate()

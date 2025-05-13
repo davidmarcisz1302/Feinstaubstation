@@ -68,7 +68,7 @@ def fetchParticulateMatterForDate():
             timestamps.append(label)
             temperatureValues.append(round(temperature, 2) if temperature else 0)
 
-            print(f"{label} Uhr:")
+            print(f"{label} Uhr: {round(temperature, 2)} °C")
 
         # Diagramm erzeugen
         plt.figure(figsize=(12, 6))
@@ -81,7 +81,7 @@ def fetchParticulateMatterForDate():
         plt.xlabel("Zeitintervall")
         plt.ylabel("Wärme")
 
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=15)
         plt.grid(True)
         plt.legend()
         plt.tight_layout()
