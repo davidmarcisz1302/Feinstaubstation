@@ -1,54 +1,46 @@
+import os
 import re
 import sqlite3
 from datetime import datetime
 import pandas as pd
-from Model.MeasurementValuesParticulate import measurementValuesParticulate
-from Model.MeasurementValuesWeather import measurementValuesWeather
+import os
 
-dbRoot = "../Model/feinstaubDB.sqlite"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))     # …/Service
+dbRoot   = os.path.join(BASE_DIR, '..', 'Model', 'feinstaubDB.sqlite')
+
 year = "2022"
 inputDateMessage = "Bitte gib ein Datum ein (dd.mm): "
 
-# Liste für Objekte
-weatherDataList = []
 particulateDataList = []
 
+# Validiert das Eingabedatum
 def getValidDate():
     # Eingaben validieren im Format dd.mm
-    dateRegex = r"^\d{2}\.\d{2}$"
+    DATE_REGEX = r"^\d{2}\.\d{2}$"
 
     while True:
         dateInput = input(inputDateMessage).strip()
-        if len(dateInput) == 5 and re.match(dateRegex, dateInput):
+        if len(dateInput) == 5 and re.match(DATE_REGEX, dateInput):
                 datetime.strptime(dateInput + "." + year, "%d.%m.%Y")
                 return dateInput
         else:
             print("Ungültige Eingabe. Bitte verwende das Format dd.mm (z.B. 08.02).")
 
-
+# Konvertiere dd.mm in yyyy-mm-dd für SQL
 def formatToSqlDate(dateInput):
     # Konvertiere dd.mm in yyyy-mm-dd für SQL
     parsedDate = datetime.strptime(dateInput + "." + year, "%d.%m.%Y")
     return parsedDate.strftime("%Y-%m-%d")
 
-
 def getMeasurementValuesParticulate():
-    global connection, row, pm_row, temp_row
+    global row, pm_row, temp_row, connection
+
+    from Model.MeasurementValuesParticulate import measurementValuesParticulate
     dateInput = getValidDate()
     formattedDate = formatToSqlDate(dateInput)
 
     try:
         connection = sqlite3.connect(dbRoot)
-
-        # Temperaturabfrage
-        queryTempStats = """
-                         SELECT DATE(timestamp)  AS date,
-                                MAX(temperature) AS maxTemperatur,
-                                MIN(temperature) AS minTemperatur,
-                                AVG(temperature) AS durchschnittlicheTemperatur
-                         FROM measurementValuesWeather
-                         WHERE DATE(timestamp) = ?; \
-                         """
 
         # Feinstaubabfrage
         queryPmAvg = """
@@ -63,21 +55,9 @@ def getMeasurementValuesParticulate():
                      GROUP BY sensorID; \
                      """
 
-        temperaturQuery = pd.read_sql_query(queryTempStats, connection, params=(formattedDate,))
-
         pmQuery = pd.read_sql_query(queryPmAvg, connection, params=(formattedDate,))
 
-        if not temperaturQuery.empty:
-            temp_row = temperaturQuery.iloc[0]
-            print(f"\nTemperatur am {dateInput}.{year}:")
-            print(f"  Maximale Temperatur: {temp_row['maxTemperatur']} °C")
-            print(f"  Minimale Temperatur: {temp_row['minTemperatur']} °C")
-            print(f"  Durchschnittliche Temperatur: {round(temp_row['durchschnittlicheTemperatur'], 2)} °C")
-        else:
-            print("\nKeine Temperaturdaten für dieses Datum gefunden.")
-
         if not pmQuery.empty:
-
             pm_row = pmQuery.mean()
 
             for index, pm_row in pmQuery.iterrows():
@@ -92,12 +72,6 @@ def getMeasurementValuesParticulate():
             else:
                 print("")
 
-        # Objekt Wetterstation
-        weatherDatas = measurementValuesWeather(
-            temp_row['maxTemperatur'],
-            temp_row['minTemperatur'],
-            round(temp_row['durchschnittlicheTemperatur'], 2))
-
         # Objekt Feinstaubsensor
         particualteDatas = measurementValuesParticulate(
             round(pm_row['maxP1'], 2),
@@ -110,15 +84,14 @@ def getMeasurementValuesParticulate():
 
         # Speicherung der Objekte in Array
         particulateDataList.append(particualteDatas)
-        weatherDataList.append(weatherDatas)
+
+        # Rückgabe des Objekts
+        return particualteDatas
 
         # Objekt korrekt ausgeben
-        print("Das Objekt:\n", weatherDatas, particualteDatas)
+        print("Das Objekt:\n", particualteDatas)
+
 
     finally:
-        connection.close()
-
-if __name__ == "__main__":
-    getMeasurementValuesParticulate()
-
-    getMeasurementValuesParticulate()
+        if connection is not None:
+            connection.close()

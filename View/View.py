@@ -30,8 +30,7 @@ def menuMeasurementValuesParticulateIO():
     print("🌫️  Feinstaub – Menü  🌫️\n" + "=" * 40 + """
     1. Feinstaubwerte nach Datum anzeigen
     2. Zwei Feinstaubwerte vergleichen
-    3. Durchschnittliche Feinstaubbelastung im Jahr
-    4. Zurück zum Hauptmenü
+    3. Zurück zum Hauptmenü
     0. Programm beenden
     """ + "=" * 40)
 
@@ -49,8 +48,7 @@ def menuMeasurementValuesWeatherIO():
     print("🌫️  Temperatur – Menü  🌫️\n" + "=" * 40 + """
     1. Temperatur nach Datum anzeigen
     2. Zwei Temperaturwerte vergleichen
-    3. Durchschnittstemperatur im Jahr
-    4. Zurück zum Hauptmenü
+    3. Zurück zum Hauptmenü
     0. Programm beenden
     """ + "=" * 40)
 
@@ -68,9 +66,7 @@ def menuMeasurementValuesHumidityIO():
     print("\n" + "=" * 40)
     print("🌫️  Luftfeuchtigkeit – Menü  🌫️\n" + "=" * 40 + """
     1. Luftfeuchtigkeit nach Datum anzeigen
-    2. Zwei Luftfeuchtigkeitswerte vergleichen
-    3. Durchschnittliche Luftfeuchtigkeit im Jahr
-    4. Zurück zum Hauptmenü
+    2. Zurück zum Hauptmenü
     0. Programm beenden
     """ + "=" * 40)
 
@@ -80,3 +76,5 @@ def menuMeasurementValuesHumidityIO():
     validateMenuInputUser(inputUser)
 
     # Weiterleitung der Menübereiche
+    from Service.menuService import editMeasurementValuesHumidityInput
+    editMeasurementValuesHumidityInput(inputUser)

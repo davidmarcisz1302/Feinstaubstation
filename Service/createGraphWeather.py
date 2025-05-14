@@ -1,3 +1,4 @@
+import os
 import re
 import sqlite3
 from datetime import datetime
@@ -7,7 +8,9 @@ import pandas as pd
 
 from Model.MeasurementValuesParticulate import measurementValuesParticulate
 
-dbRoot = "../Model/feinstaubDB.sqlite"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))     # …/Service
+dbRoot   = os.path.join(BASE_DIR, '..', 'Model', 'feinstaubDB.sqlite')
+
 year = "2022"
 inputDateMessage = "Bitte gib ein Datum ein (dd.mm): "
 
@@ -35,7 +38,7 @@ def formatToSqlDate(dateInput):
 
 
 # Durchschnittliche Feinstaubwerte von 0:00-24:00 Uhr
-def fetchParticulateMatterForDate():
+def fetchMeasurementValuesWeatherForDate():
     dateInput = getValidDateInput()
     formattedDate = formatToSqlDate(dateInput)
 
@@ -46,7 +49,7 @@ def fetchParticulateMatterForDate():
         timestamps = []
         temperatureValues = []
 
-        print(f"\nFeinstaubwerte am {dateInput}.{year}\n")
+        print(f"\nTemperatur am {dateInput}.{year}\n")
 
         for hour in range(0, 24, 2):
             startTime = f"{hour:02}:00:00"
@@ -78,8 +81,8 @@ def fetchParticulateMatterForDate():
         plt.title(f"Wetter Temperatur am {dateInput}.{year}")
 
         # Label X,Y-Achse
-        plt.xlabel("Zeitintervall")
-        plt.ylabel("Wärme")
+        plt.xlabel("Zeitintervall t")
+        plt.ylabel("Temperatur °C")
 
         plt.xticks(rotation=15)
         plt.grid(True)
@@ -92,7 +95,3 @@ def fetchParticulateMatterForDate():
 
     finally:
         connection.close()
-
-
-if __name__ == "__main__":
-    fetchParticulateMatterForDate()

@@ -1,3 +1,4 @@
+import os
 import re
 import sqlite3
 from datetime import datetime
@@ -7,7 +8,9 @@ import pandas as pd
 
 from Model.MeasurementValuesParticulate import measurementValuesParticulate
 
-dbRoot = "../Model/feinstaubDB.sqlite"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+dbRoot   = os.path.join(BASE_DIR, '..', 'Model', 'feinstaubDB.sqlite')
+
 year = "2022"
 inputDateMessage = "Bitte gib ein Datum ein (dd.mm): "
 
@@ -113,7 +116,3 @@ def fetchParticulateMatterForDate():
 
     finally:
         connection.close()
-
-
-if __name__ == "__main__":
-    fetchParticulateMatterForDate()
