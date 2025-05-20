@@ -2,8 +2,6 @@ import re
 import sys
 
 MENU_INPUT_REGEX = r"^[0-4]$"
-DATE_REGEX = r"^\d{2}\.\d{2}$"
-year = "2022"
 
 # Validierung der Benutzereingabe
 def validateMenuInputUser(inputUser):
@@ -17,7 +15,8 @@ def validateMenuInputUser(inputUser):
 
 # Menüfunktionen Hauptmenü
 def editMainMenuInput(inputUser):
-    from View.View import menuMeasurementValuesParticulateIO, menuMeasurementValuesWeatherIO, menuMeasurementValuesHumidityIO
+    from View.View import (menuMeasurementValuesParticulateIO, menuMeasurementValuesWeatherIO,
+                           menuMeasurementValuesHumidityIO)
 
     match int(inputUser):
         case 0:

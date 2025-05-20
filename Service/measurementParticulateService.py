@@ -52,7 +52,6 @@ def getMeasurementValuesParticulate():
                             MIN(P2) AS minP2
                      FROM measurementValuesParticulate
                      WHERE DATE(timestamp) = ?
-                     GROUP BY sensorID; \
                      """
 
         pmQuery = pd.read_sql_query(queryPmAvg, connection, params=(formattedDate,))

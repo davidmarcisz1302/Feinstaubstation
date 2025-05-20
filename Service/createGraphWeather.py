@@ -39,6 +39,7 @@ def formatToSqlDate(dateInput):
 
 # Durchschnittliche Feinstaubwerte von 0:00-24:00 Uhr
 def fetchMeasurementValuesWeatherForDate():
+    global connection
     dateInput = getValidDateInput()
     formattedDate = formatToSqlDate(dateInput)
 

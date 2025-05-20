@@ -1,10 +1,12 @@
 # Verbindung zur DB
 import csv
+import os
 import sqlite3
 
-from MeasurementValuesWeather.DatabaseModel import dht22_path, sds011_path
-
-conn = sqlite3.connect("feinstaubDB.sqlite")
+from DatabaseModel import dht22_path, sds011_path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+dbRoot   = os.path.join(BASE_DIR, '..', 'Model', 'feinstaubDB.sqlite')
+conn = sqlite3.connect(dbRoot)
 cursor = conn.cursor()
 
 # Hilfsfunktionen
