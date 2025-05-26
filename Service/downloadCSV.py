@@ -44,7 +44,7 @@ class CSVGZDownloader2022:
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
                 print(f"Fehler bei {filename}: {e}")
 
-# Beispiel: SDS011 (3659) & DHT22 (3660)
+# SDS011 (3659) & DHT22 (3660)
 if __name__ == "__main__":
     sensorList = [("sds011", 3659), ("dht22", 3660)]
     downloader = CSVGZDownloader2022(sensorList)
@@ -96,5 +96,5 @@ def extract_and_split_by_sensor(input_dir, output_dir):
 
 extract_and_split_by_sensor(
     input_dir="C:/Entwicklung/Feinstaubprojekt/csv",
-    output_dir="C:/Entwicklung/Feinstaubprojekt/ausgabe"
+    output_dir="C:/Entwicklung/Feinstaubprojekt/"
 )

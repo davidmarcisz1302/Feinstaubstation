@@ -2,10 +2,9 @@
 import sqlite3
 
 dht22_path = "dht22_combined.csv"
-sds011_path = "sds011_combined.csv"
+sds011_path = "../csvDatas/sds011_combined.csv"
 conn = sqlite3.connect("feinstaubDB.sqlite")
 
-# Cursor-Objekt
 cursor = conn.cursor()
 
 # Tabelle Messgerät

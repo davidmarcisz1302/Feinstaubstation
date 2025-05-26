@@ -1,8 +1,28 @@
 class measurementValuesWeather:
-    def __init__(self, max_temp, min_temp, avg_temp):
-        self.max_temp = max_temp
-        self.min_temp = min_temp
-        self.avg_temp = avg_temp
+    def __init__(self, maxTemp, minTemp, avgTemp):
+        self.maxTemp = maxTemp
+        self.minTemp = minTemp
+        self.avgTemp = avgTemp
+
+    # Getter-Methoden
+    def getMaxTemp(self):
+        return self.maxTemp
+
+    def getMinTemp(self):
+        return self.minTemp
+
+    def getAvgTemp(self):
+        return self.avgTemp
+
+    # Setter-Methoden
+    def setMaxTemp(self, value):
+        self.maxTemp = value
+
+    def setMinTemp(self, value):
+        self.minTemp = value
+
+    def setAvgTemp(self, value):
+        self.avgTemp = value
 
     def __str__(self):
-        return f"Max: {self.max_temp} °C, Min: {self.min_temp} °C, Durchschnitt: {self.avg_temp} °C"
+        return f"\nMax: {self.maxTemp} °C\nMin: {self.minTemp} °C´\nDurchschnitt: {self.avgTemp} °C\n\n"
