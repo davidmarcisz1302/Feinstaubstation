@@ -1,7 +1,7 @@
 import re
 import sys
 
-MENU_INPUT_REGEX = r"^[0-4]$"
+MENU_INPUT_REGEX = r"^[0-3]$"
 
 # Validierung der Benutzereingabe
 def validateMenuInputUser(inputUser):
@@ -10,7 +10,7 @@ def validateMenuInputUser(inputUser):
             return
 
         else:
-            print("Ungültige Eingabe. Bitte gebe eine Zahl von 0-4 ein")
+            print("Ungültige Eingabe. Bitte gebe eine Zahl von 0-3 ein")
             inputUser = input(": ")
 
 # Menüfunktionen Hauptmenü

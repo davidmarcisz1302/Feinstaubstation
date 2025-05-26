@@ -6,7 +6,6 @@ def mainMenu():
     print("🌫️  Willkommen bei der Feinstaubstation  🌫️".center(70))
     print("=" * 70)
     print()
-    # Hauptmenü
     print("\n" + "=" * 40)
     print("🌫️  Feinstaubstation – Hauptmenü  🌫️\n" + "=" * 40 + """
     1. Feinstaubdaten anzeigen
